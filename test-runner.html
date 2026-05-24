@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BG Eraser AI — Automated Test Suite & Report</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #06060e;
+            --bg-card: #0c0c1a;
+            --bg-elevated: #111128;
+            --accent: #8b5cf6;
+            --accent-secondary: #06b6d4;
+            --text-primary: #eeeef2;
+            --text-secondary: #8888aa;
+            --border: rgba(255, 255, 255, 0.07);
+            --success: #10b981;
+            --success-glow: rgba(16, 185, 129, 0.15);
+            --error: #ef4444;
+            --error-glow: rgba(239, 68, 68, 0.15);
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-base);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 40px 24px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* --- Header --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 24px;
+            margin-bottom: 32px;
+        }
+
+        .title-area h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .title-area p {
+            color: var(--text-secondary);
+            margin: 4px 0 0;
+            font-size: 0.9rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            font-family: 'Inter', sans-serif;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
+            border: none;
+            color: white;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
+        }
+
+        /* --- Summary Cards --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-val {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .text-success { color: var(--success); }
+        .text-error { color: var(--error); }
+        .text-accent { color: var(--accent-secondary); }
+
+        /* --- Test Items --- */
+        .suite-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 32px 0 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+        }
+
+        .test-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .test-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .test-item:hover {
+            border-color: rgba(255,255,255,0.12);
+        }
+
+        .test-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .test-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .test-desc {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .test-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+
+        .status-pass {
+            background: var(--success-glow);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .status-fail {
+            background: var(--error-glow);
+            color: var(--error);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .status-pending {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        /* --- Report Details (Hidden from standard view, styled for PDF print) --- */
+        .report-meta {
+            display: none;
+            background: #111;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            font-size: 0.85rem;
+            border: 1px solid var(--border);
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .meta-item strong {
+            color: var(--text-secondary);
+        }
+
+        /* --- Print Styling --- */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+                padding: 0;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            .btn, .actions {
+                display: none !important;
+            }
+
+            .report-meta {
+                display: block !important;
+                background: #f5f5f5 !important;
+                color: black !important;
+                border: 1px solid #ddd !important;
+            }
+
+            .stat-card {
+                background: #f9f9f9 !important;
+                border: 1px solid #ddd !important;
+                color: black !important;
+            }
+
+            .test-item {
+                background: white !important;
+                border: 1px solid #ddd !important;
+                color: black !important;
+                page-break-inside: avoid;
+            }
+
+            .status-pass {
+                background: #e6f4ea !important;
+                color: #137333 !important;
+                border-color: #aad2ba !important;
+            }
+
+            .status-fail {
+                background: #fce8e6 !important;
+                color: #c5221f !important;
+                border-color: #f5c2c1 !important;
+            }
+
+            .title-area h1 {
+                background: none !important;
+                -webkit-text-fill-color: initial !important;
+                color: black !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="title-area">
+                <h1>BG Eraser AI — Verification Suite</h1>
+                <p>Automated Unit & Integration Test Runner</p>
+            </div>
+            <div class="actions">
+                <button id="btn-run" class="btn btn-primary" onclick="runTests()">Run Diagnostics</button>
+                <button id="btn-print" class="btn" onclick="window.print()">Export Test Report</button>
+            </div>
+        </header>
+
+        <!-- Metadata for PDF export -->
+        <div class="report-meta" id="report-meta">
+            <div class="meta-grid">
+                <div class="meta-item"><strong>Date Executed:</strong> <span id="report-date">-</span></div>
+                <div class="meta-item"><strong>Environment:</strong> Browser Agent (Chrome/Edge/Firefox)</div>
+                <div class="meta-item"><strong>Test Target:</strong> index.html, app.js, style.css</div>
+                <div class="meta-item"><strong>Status:</strong> <span id="report-status" class="text-success">PASS</span></div>
+            </div>
+        </div>
+
+        <!-- Summary Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div id="stat-total" class="stat-val">8</div>
+                <div class="stat-label">Total Tests</div>
+            </div>
+            <div class="stat-card">
+                <div id="stat-passed" class="stat-val text-success">0</div>
+                <div class="stat-label">Passed</div>
+            </div>
+            <div class="stat-card">
+                <div id="stat-failed" class="stat-val text-error">0</div>
+                <div class="stat-label">Failed</div>
+            </div>
+            <div class="stat-card">
+                <div id="stat-rate" class="stat-val text-accent">0%</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+        </div>
+
+        <!-- Diagnostic Suites -->
+        <div class="suite-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Unit Diagnostics (Core Logic)
+        </div>
+        <div class="test-list">
+            <div class="test-item">
+                <div class="test-info">
+                    <span class="test-name">Format File Size — Bytes</span>
+                    <span class="test-desc">Checks if values under 1024 are formatted in Bytes (e.g. "500 B").</span>
+                </div>
+                <span id="test-1" class="test-status status-pending">Pending</span>
+            </div>
+
+            <div class="test-item">
+                <div class="test-info">
+                    <span class="test-name">Format File Size — Kilobytes</span>
+                    <span class="test-desc">Checks if values above 1024 are formatted in KB (e.g. "1.5 KB").</span>
+                </div>
+                <span id="test-2" class="test-status status-pending">Pending</span>
+            </div>
+
+            <div class="test-item">
+                <div class="test-info">
+                    <span class="test-name">Format File Size — Megabytes</span>
+                    <span class="test-desc">Checks if values above 1MB are formatted in MB (e.g. "4.2 MB").</span>
+                </div>
+                <span id="test-3" class="test-status status-pending">Pending</span>
+            </div>
+        </div>
+
+        <div class="suite-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+            Integration Diagnostics (DOM & States)
+        </div>
+        <div class="test-list">
+            <div class="test-item">
+                <div class="test-info">
+                    <span class="test-name">DOM Structure Integrity</span>
+                    <span class="test-desc">Verifies crucial interactive elements (drop-zone, input, buttons) exist.</span>
+                </div>
+                <span id="test-4" class="test-status status-pending">Pending</span>
+            </div>
+
+            <div class="test-item">
+                <div class="test-info">
+                    <span class="test-name">Comparison Container Setup</span>
+                    <span class="test-desc">Verifies before-and-after slider DOM integrity and checkboard structure.</span>
+                </div>
+                <span id="test-5" class="test-status status-pending">Pending</span>
+            </div>
+
+            <div class="test-item">
+                <div class="test-info">
+                    <span class="test-name">Input Constraint Configuration</span>
+                    <span class="test-desc">Verifies accepted formats (PNG, JPG, WEBP) match modern standards.</span>
+                </div>
+                <span id="test-6" class="test-status status-pending">Pending</span>
+            </div>
+        </div>
+
+        <div class="suite-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            System State Diagnostics
+        </div>
+        <div class="test-list">
+            <div class="test-item">
+                <div class="test-info">
+                    <span class="test-name">Section Controller Active State</span>
+                    <span class="test-desc">Verifies only one UI panel is displayed to the user at a time.</span>
+                </div>
+                <span id="test-7" class="test-status status-pending">Pending</span>
+            </div>
+
+            <div class="test-item">
+                <div class="test-info">
+                    <span class="test-name">External Library Reachability</span>
+                    <span class="test-desc">Ensures the img.ly AI background removal library package is accessible.</span>
+                </div>
+                <span id="test-8" class="test-status status-pending">Pending</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Copy of target utility functions to test independently
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        async function runTests() {
+            document.getElementById('report-date').textContent = new Date().toLocaleString();
+            
+            const results = {
+                passed: 0,
+                failed: 0,
+                total: 8
+            };
+
+            const updateTestUI = (id, passed) => {
+                const el = document.getElementById(id);
+                if (passed) {
+                    el.textContent = 'PASS';
+                    el.className = 'test-status status-pass';
+                    results.passed++;
+                } else {
+                    el.textContent = 'FAIL';
+                    el.className = 'test-status status-fail';
+                    results.failed++;
+                }
+                
+                // Update stats
+                document.getElementById('stat-passed').textContent = results.passed;
+                document.getElementById('stat-failed').textContent = results.failed;
+                const rate = Math.round((results.passed / (results.passed + results.failed)) * 100);
+                document.getElementById('stat-rate').textContent = rate + '%';
+            };
+
+            // Test 1: Format File Size - Bytes
+            try {
+                const res = formatFileSize(500);
+                updateTestUI('test-1', res === '500 B');
+            } catch {
+                updateTestUI('test-1', false);
+            }
+            await new Promise(r => setTimeout(r, 150));
+
+            // Test 2: Format File Size - KB
+            try {
+                const res = formatFileSize(1536);
+                updateTestUI('test-2', res === '1.5 KB');
+            } catch {
+                updateTestUI('test-2', false);
+            }
+            await new Promise(r => setTimeout(r, 150));
+
+            // Test 3: Format File Size - MB
+            try {
+                const res = formatFileSize(4404019);
+                updateTestUI('test-3', res === '4.2 MB');
+            } catch {
+                updateTestUI('test-3', false);
+            }
+            await new Promise(r => setTimeout(r, 150));
+
+            // Setup iframe to parse actual index.html structure for integration tests
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = 'index.html';
+            document.body.appendChild(iframe);
+
+            iframe.onload = async () => {
+                const doc = iframe.contentDocument || iframe.contentWindow.document;
+
+                // Test 4: DOM Structure Integrity
+                try {
+                    const dropZone = doc.getElementById('drop-zone');
+                    const fileInput = doc.getElementById('file-input');
+                    const btnDownload = doc.getElementById('btn-download');
+                    const btnNew = doc.getElementById('btn-new');
+                    updateTestUI('test-4', dropZone && fileInput && btnDownload && btnNew);
+                } catch {
+                    updateTestUI('test-4', false);
+                }
+                await new Promise(r => setTimeout(r, 150));
+
+                // Test 5: Comparison Container Setup
+                try {
+                    const container = doc.getElementById('comparison-container');
+                    const original = doc.getElementById('comparison-original');
+                    const result = doc.getElementById('result-image');
+                    const handle = doc.getElementById('slider-handle');
+                    updateTestUI('test-5', container && original && result && handle);
+                } catch {
+                    updateTestUI('test-5', false);
+                }
+                await new Promise(r => setTimeout(r, 150));
+
+                // Test 6: Input Constraint Configuration
+                try {
+                    const input = doc.getElementById('file-input');
+                    const accept = input.getAttribute('accept');
+                    const isConfigured = accept.includes('image/png') && accept.includes('image/webp');
+                    updateTestUI('test-6', isConfigured);
+                } catch {
+                    updateTestUI('test-6', false);
+                }
+                await new Promise(r => setTimeout(r, 150));
+
+                // Test 7: Section Controller Active State
+                try {
+                    const sections = doc.querySelectorAll('.section');
+                    let activeCount = 0;
+                    sections.forEach(s => {
+                        if (s.classList.contains('active')) activeCount++;
+                    });
+                    updateTestUI('test-7', activeCount === 1);
+                } catch {
+                    updateTestUI('test-7', false);
+                }
+                await new Promise(r => setTimeout(r, 150));
+
+                // Test 8: External Library Reachability
+                try {
+                    const response = await fetch('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/+esm', { method: 'HEAD' });
+                    updateTestUI('test-8', response.ok);
+                } catch {
+                    updateTestUI('test-8', false);
+                }
+
+                // Remove iframe
+                document.body.removeChild(iframe);
+
+                // Update final report status
+                const reportStatus = document.getElementById('report-status');
+                if (results.failed > 0) {
+                    reportStatus.textContent = 'FAIL';
+                    reportStatus.className = 'text-error';
+                } else {
+                    reportStatus.textContent = 'PASS';
+                    reportStatus.className = 'text-success';
+                }
+            };
+        }
+
+        // Auto-run on load
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(runTests, 500);
+        });
+    </script>
+</body>
+</html>

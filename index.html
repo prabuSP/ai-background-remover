@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Background Remover — Remove Backgrounds Instantly</title>
+    <meta name="description" content="Remove image backgrounds instantly with AI — free, fast, and 100% in your browser. No uploads, no API keys.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Ambient Background Effects -->
+    <div class="ambient-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Header -->
+    <header id="app-header">
+        <div class="header-inner">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="url(#logoGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <defs>
+                            <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#8b5cf6"/>
+                                <stop offset="100%" style="stop-color:#06b6d4"/>
+                            </linearGradient>
+                        </defs>
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1>BG Eraser<span class="logo-ai">AI</span></h1>
+                </div>
+            </div>
+            <div class="header-badge">
+                <span class="badge-dot"></span>
+                100% Browser-Based
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="app-main">
+
+        <!-- ===== UPLOAD SECTION ===== -->
+        <section id="upload-section" class="section active">
+            <div class="hero-text">
+                <h2>Remove Backgrounds <span class="gradient-text">Instantly</span></h2>
+                <p class="hero-subtitle">Drop an image and watch AI erase the background in seconds. No sign-up. No upload to servers. Everything happens right in your browser.</p>
+            </div>
+
+            <div id="drop-zone" class="drop-zone" tabindex="0" role="button" aria-label="Upload an image">
+                <div class="drop-zone-border"></div>
+                <div class="drop-zone-content">
+                    <div class="upload-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                    </div>
+                    <h3 class="drop-title">Drop your image here</h3>
+                    <p class="drop-subtitle">or click to browse files</p>
+                    <div class="supported-formats">
+                        <span class="format-chip">PNG</span>
+                        <span class="format-chip">JPG</span>
+                        <span class="format-chip">JPEG</span>
+                        <span class="format-chip">WEBP</span>
+                    </div>
+                    <p class="size-limit">Max file size: 20MB</p>
+                </div>
+                <input type="file" id="file-input" accept="image/png,image/jpeg,image/jpg,image/webp" hidden>
+            </div>
+
+            <!-- Feature Pills -->
+            <div class="features">
+                <div class="feature-pill">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    Lightning Fast
+                </div>
+                <div class="feature-pill">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    100% Private
+                </div>
+                <div class="feature-pill">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    No Upload Required
+                </div>
+                <div class="feature-pill">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Free Forever
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== PROCESSING SECTION ===== -->
+        <section id="processing-section" class="section">
+            <div class="processing-card">
+                <div class="processing-image-wrapper">
+                    <img id="processing-preview" src="" alt="Processing image">
+                    <div class="scan-line"></div>
+                    <div class="processing-overlay"></div>
+                </div>
+                <div class="processing-info">
+                    <div class="spinner">
+                        <div class="spinner-ring"></div>
+                        <div class="spinner-ring spinner-ring-2"></div>
+                        <div class="spinner-dot"></div>
+                    </div>
+                    <h3 id="processing-status">Loading AI Model...</h3>
+                    <p id="processing-substatus">This may take a moment on first use</p>
+                    <div class="progress-bar-wrapper">
+                        <div class="progress-bar">
+                            <div id="progress-fill" class="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== RESULT SECTION ===== -->
+        <section id="result-section" class="section">
+            <div class="result-header">
+                <h2>Background Removed <span class="gradient-text">Successfully!</span></h2>
+                <p class="result-subtitle">Drag the slider to compare before & after</p>
+            </div>
+
+            <!-- Comparison Slider -->
+            <div id="comparison-container" class="comparison-container">
+                <div class="checkerboard-bg"></div>
+                <img id="result-image" class="comparison-result" src="" alt="Result with background removed">
+                <div id="comparison-original-wrapper" class="comparison-original-wrapper">
+                    <img id="comparison-original" class="comparison-original" src="" alt="Original image">
+                </div>
+                <div id="slider-handle" class="slider-handle">
+                    <div class="slider-line"></div>
+                    <div class="slider-grip">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                            <polyline points="15 18 9 12 15 6"/>
+                        </svg>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="comparison-label label-before">BEFORE</div>
+                <div class="comparison-label label-after">AFTER</div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="result-actions">
+                <button id="btn-download" class="btn btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Download PNG
+                </button>
+                <button id="btn-new" class="btn btn-secondary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="1 4 1 10 7 10"/>
+                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                    </svg>
+                    Remove Another
+                </button>
+            </div>
+
+            <!-- Image Info -->
+            <div id="image-info" class="image-info"></div>
+        </section>
+
+        <!-- ===== ERROR SECTION ===== -->
+        <section id="error-section" class="section">
+            <div class="error-card">
+                <div class="error-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="15" y1="9" x2="9" y2="15"/>
+                        <line x1="9" y1="9" x2="15" y2="15"/>
+                    </svg>
+                </div>
+                <h3 id="error-title">Something went wrong</h3>
+                <p id="error-message">An unexpected error occurred. Please try again.</p>
+                <button id="btn-retry" class="btn btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="1 4 1 10 7 10"/>
+                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                    </svg>
+                    Try Again
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer id="app-footer">
+        <p>Powered by <span class="gradient-text">AI</span> · Runs entirely in your browser · No data leaves your device</p>
+    </footer>
+
+    <!-- Load the AI library and app logic -->
+    <script type="module">
+        // ============================================
+        // AI Background Remover — App Logic
+        // ============================================
+
+        // Dynamically import the background removal library
+        let removeBackground;
+
+        async function loadLibrary() {
+            try {
+                const module = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/+esm');
+                removeBackground = module.removeBackground;
+                console.log('[BG Eraser] AI library loaded successfully');
+            } catch (err) {
+                console.error('[BG Eraser] Failed to load AI library:', err);
+                throw new Error(`Failed to load the AI library: ${err.message || err}. Please check your internet connection or console logs.`);
+            }
+        }
+
+        // --- DOM References ---
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const uploadSection = document.getElementById('upload-section');
+        const processingSection = document.getElementById('processing-section');
+        const resultSection = document.getElementById('result-section');
+        const errorSection = document.getElementById('error-section');
+
+        const processingPreview = document.getElementById('processing-preview');
+        const processingStatus = document.getElementById('processing-status');
+        const processingSubstatus = document.getElementById('processing-substatus');
+        const progressFill = document.getElementById('progress-fill');
+
+        const resultImage = document.getElementById('result-image');
+        const comparisonOriginal = document.getElementById('comparison-original');
+        const comparisonOriginalWrapper = document.getElementById('comparison-original-wrapper');
+        const comparisonContainer = document.getElementById('comparison-container');
+        const sliderHandle = document.getElementById('slider-handle');
+
+        const btnDownload = document.getElementById('btn-download');
+        const btnNew = document.getElementById('btn-new');
+        const btnRetry = document.getElementById('btn-retry');
+
+        const errorTitle = document.getElementById('error-title');
+        const errorMessage = document.getElementById('error-message');
+        const imageInfoEl = document.getElementById('image-info');
+
+        // --- State ---
+        let currentFile = null;
+        let originalImageURL = null;
+        let resultBlobURL = null;
+        let isProcessing = false;
+        let libraryLoaded = false;
+
+        // --- Constants ---
+        const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
+        const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
+
+        // ============================================
+        // Section Management
+        // ============================================
+
+        function showSection(section) {
+            [uploadSection, processingSection, resultSection, errorSection].forEach(s => {
+                s.classList.remove('active');
+            });
+            // Force reflow for animation
+            void section.offsetWidth;
+            section.classList.add('active');
+        }
+
+        // ============================================
+        // File Upload Handling
+        // ============================================
+
+        // Click to upload
+        dropZone.addEventListener('click', () => {
+            if (!isProcessing) fileInput.click();
+        });
+
+        // Keyboard accessibility
+        dropZone.addEventListener('keydown', (e) => {
+            if ((e.key === 'Enter' || e.key === ' ') && !isProcessing) {
+                e.preventDefault();
+                fileInput.click();
+            }
+        });
+
+        // File selected via input
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) handleFile(file);
+            fileInput.value = ''; // Reset so same file can be re-selected
+        });
+
+        // Drag & Drop
+        dropZone.addEventListener('dragenter', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            if (!dropZone.contains(e.relatedTarget)) {
+                dropZone.classList.remove('drag-over');
+            }
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            const file = e.dataTransfer.files[0];
+            if (file) handleFile(file);
+        });
+
+        // Prevent default browser behavior for drag events
+        document.addEventListener('dragover', (e) => e.preventDefault());
+        document.addEventListener('drop', (e) => e.preventDefault());
+
+        // ============================================
+        // File Validation & Processing
+        // ============================================
+
+        function handleFile(file) {
+            // Validate file type
+            if (!ALLOWED_TYPES.includes(file.type)) {
+                showError(
+                    'Unsupported File Format',
+                    `Please upload a PNG, JPG, JPEG, or WEBP image. You uploaded: ${file.type || 'unknown format'}`
+                );
+                return;
+            }
+
+            // Validate file size
+            if (file.size > MAX_FILE_SIZE) {
+                showError(
+                    'File Too Large',
+                    `Maximum file size is 20MB. Your file is ${(file.size / (1024 * 1024)).toFixed(1)}MB.`
+                );
+                return;
+            }
+
+            currentFile = file;
+            processImage(file);
+        }
+
+        async function processImage(file) {
+            isProcessing = true;
+
+            // Clean up previous URLs
+            if (originalImageURL) URL.revokeObjectURL(originalImageURL);
+            if (resultBlobURL) URL.revokeObjectURL(resultBlobURL);
+
+            // Create preview URL
+            originalImageURL = URL.createObjectURL(file);
+
+            // Show processing section
+            processingPreview.src = originalImageURL;
+            updateProgress(0, 'Loading AI Model...', 'Downloading neural network — this may take a moment on first use');
+            showSection(processingSection);
+
+            try {
+                // Load the library if not loaded yet
+                if (!libraryLoaded) {
+                    await loadLibrary();
+                    libraryLoaded = true;
+                }
+
+                // Simulate progressive loading for UX
+                let fakeProgress = 0;
+                const progressInterval = setInterval(() => {
+                    if (fakeProgress < 85) {
+                        fakeProgress += Math.random() * 6;
+                        fakeProgress = Math.min(fakeProgress, 85);
+                        updateProgress(fakeProgress);
+
+                        if (fakeProgress > 5 && fakeProgress < 25) {
+                            updateProgress(fakeProgress, 'Initializing AI Engine...', 'Setting up ONNX runtime');
+                        } else if (fakeProgress > 25 && fakeProgress < 50) {
+                            updateProgress(fakeProgress, 'Analyzing Image...', 'Detecting foreground elements');
+                        } else if (fakeProgress > 50 && fakeProgress < 70) {
+                            updateProgress(fakeProgress, 'Segmenting Objects...', 'Separating foreground from background');
+                        } else if (fakeProgress > 70) {
+                            updateProgress(fakeProgress, 'Removing Background...', 'Refining edges — almost there...');
+                        }
+                    }
+                }, 500);
+
+                // Actually remove background
+                const resultBlob = await removeBackground(file, {
+                    model: 'medium',
+                    output: {
+                        format: 'image/png',
+                        quality: 0.9,
+                        type: 'foreground',
+                    },
+                });
+
+                clearInterval(progressInterval);
+                updateProgress(100, 'Complete!', 'Background removed successfully');
+
+                // Short delay to show 100% completion
+                await new Promise(resolve => setTimeout(resolve, 600));
+
+                // Create result URL
+                resultBlobURL = URL.createObjectURL(resultBlob);
+
+                // Show result
+                showResult(file, resultBlob);
+
+            } catch (err) {
+                console.error('Background removal failed:', err);
+                showError(
+                    'Processing Failed',
+                    err.message || 'An unexpected error occurred while removing the background. Please try again with a different image.'
+                );
+            } finally {
+                isProcessing = false;
+            }
+        }
+
+        function updateProgress(percent, title, subtitle) {
+            progressFill.style.width = `${percent}%`;
+            if (title) processingStatus.textContent = title;
+            if (subtitle) processingSubstatus.textContent = subtitle;
+        }
+
+        // ============================================
+        // Result Display
+        // ============================================
+
+        function showResult(originalFile, resultBlob) {
+            // Set images
+            resultImage.src = resultBlobURL;
+            comparisonOriginal.src = originalImageURL;
+
+            // Wait for images to load before showing
+            const loadPromises = [
+                new Promise(resolve => {
+                    resultImage.onload = resolve;
+                    resultImage.onerror = resolve;
+                }),
+                new Promise(resolve => {
+                    comparisonOriginal.onload = resolve;
+                    comparisonOriginal.onerror = resolve;
+                })
+            ];
+
+            Promise.all(loadPromises).then(() => {
+                // Set container aspect ratio based on the result image
+                const img = resultImage;
+                const aspectRatio = img.naturalWidth / img.naturalHeight;
+                comparisonContainer.style.aspectRatio = `${aspectRatio}`;
+
+                // Adjust original image width to match container
+                comparisonOriginal.style.width = `${comparisonContainer.offsetWidth}px`;
+                comparisonOriginal.style.height = '100%';
+                comparisonOriginal.style.objectFit = 'contain';
+
+                // Reset slider to 50%
+                setSliderPosition(50);
+
+                // Show image info
+                const originalSize = formatFileSize(originalFile.size);
+                const resultSize = formatFileSize(resultBlob.size);
+                imageInfoEl.innerHTML = `
+                    <div class="info-item"><strong>Original:</strong> ${originalSize}</div>
+                    <div class="info-item"><strong>Result:</strong> ${resultSize}</div>
+                    <div class="info-item"><strong>Dimensions:</strong> ${img.naturalWidth} × ${img.naturalHeight}</div>
+                `;
+
+                showSection(resultSection);
+                showToast('Background removed successfully!', 'success');
+            });
+        }
+
+        // ============================================
+        // Comparison Slider
+        // ============================================
+
+        let isDragging = false;
+
+        function setSliderPosition(percent) {
+            percent = Math.max(0, Math.min(100, percent));
+            sliderHandle.style.left = `${percent}%`;
+            comparisonOriginalWrapper.style.width = `${percent}%`;
+
+            // Keep original image properly sized
+            const containerWidth = comparisonContainer.offsetWidth;
+            comparisonOriginal.style.width = `${containerWidth}px`;
+        }
+
+        function getSliderPercent(clientX) {
+            const rect = comparisonContainer.getBoundingClientRect();
+            return ((clientX - rect.left) / rect.width) * 100;
+        }
+
+        // Mouse events
+        comparisonContainer.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            setSliderPosition(getSliderPercent(e.clientX));
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                e.preventDefault();
+                setSliderPosition(getSliderPercent(e.clientX));
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        // Touch events
+        comparisonContainer.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            setSliderPosition(getSliderPercent(e.touches[0].clientX));
+        }, { passive: true });
+
+        document.addEventListener('touchmove', (e) => {
+            if (isDragging) {
+                setSliderPosition(getSliderPercent(e.touches[0].clientX));
+            }
+        }, { passive: true });
+
+        document.addEventListener('touchend', () => {
+            isDragging = false;
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (resultSection.classList.contains('active')) {
+                const containerWidth = comparisonContainer.offsetWidth;
+                comparisonOriginal.style.width = `${containerWidth}px`;
+            }
+        });
+
+        // ============================================
+        // Action Buttons
+        // ============================================
+
+        btnDownload.addEventListener('click', () => {
+            if (!resultBlobURL) return;
+
+            const link = document.createElement('a');
+            link.href = resultBlobURL;
+
+            const originalName = currentFile ? currentFile.name.replace(/\.[^/.]+$/, '') : 'image';
+            link.download = `${originalName}_no_bg.png`;
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            showToast('Image downloaded!', 'success');
+        });
+
+        btnNew.addEventListener('click', resetApp);
+        btnRetry.addEventListener('click', () => {
+            if (currentFile) {
+                processImage(currentFile);
+            } else {
+                resetApp();
+            }
+        });
+
+        function resetApp() {
+            if (originalImageURL) {
+                URL.revokeObjectURL(originalImageURL);
+                originalImageURL = null;
+            }
+            if (resultBlobURL) {
+                URL.revokeObjectURL(resultBlobURL);
+                resultBlobURL = null;
+            }
+            currentFile = null;
+            isProcessing = false;
+            showSection(uploadSection);
+        }
+
+        // ============================================
+        // Error Handling
+        // ============================================
+
+        function showError(title, message) {
+            errorTitle.textContent = title;
+            errorMessage.textContent = message;
+            showSection(errorSection);
+        }
+
+        // ============================================
+        // Toast Notifications
+        // ============================================
+
+        function showToast(message, type = 'success') {
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) existingToast.remove();
+
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+
+            const icon = type === 'success'
+                ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>'
+                : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+
+            toast.innerHTML = `${icon} ${message}`;
+            document.body.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    toast.classList.add('show');
+                });
+            });
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // ============================================
+        // Utility
+        // ============================================
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+    </script>
+</body>
+</html>
